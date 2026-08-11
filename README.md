@@ -1,3 +1,5 @@
+🌐 **[English](README.md)** | [简体中文](README.zh-CN.md)
+
 # 🔭 EpiScope
 
 **Ontology-driven epidemiological analysis platform** — an open-source, Palantir-Foundry-style toolkit for analyzing notifiable-disease report-card data (传染病报告卡 / 流调数据): ingest → ontology mapping → analysis → interactive visualization.
