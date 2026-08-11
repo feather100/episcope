@@ -1,0 +1,642 @@
+{
+  "name": "传染病监测本体 Infectious Disease Surveillance Ontology",
+  "version": "0.1.0",
+  "namespace": "https://open-ontology.local/ids-onto#",
+  "description": "面向中国传染病报告卡/流调数据的 Palantir 风格轻量本体：对象类型(Object Type)、关联类型(Link Type)、动作类型(Action Type)、属性映射(source mapping)。",
+  "objectTypes": [
+    {
+      "id": "Case",
+      "displayName": "病例/报告卡",
+      "primaryKey": "card_id",
+      "properties": [
+        {
+          "id": "card_id",
+          "displayName": "卡片ID",
+          "type": "STRING",
+          "source": "卡片ID",
+          "required": true
+        },
+        {
+          "id": "card_no",
+          "displayName": "卡片编号",
+          "type": "STRING",
+          "source": "卡片编号"
+        },
+        {
+          "id": "card_status",
+          "displayName": "卡片状态",
+          "type": "ENUM",
+          "source": "卡片状态",
+          "values": [
+            "原始卡",
+            "订正卡"
+          ]
+        },
+        {
+          "id": "onset_date",
+          "displayName": "发病日期",
+          "type": "DATE",
+          "source": "发病日期"
+        },
+        {
+          "id": "diag_time",
+          "displayName": "诊断时间",
+          "type": "DATETIME",
+          "source": "诊断时间"
+        },
+        {
+          "id": "death_date",
+          "displayName": "死亡日期",
+          "type": "DATE",
+          "source": "死亡日期"
+        },
+        {
+          "id": "case_class",
+          "displayName": "病例分类",
+          "type": "ENUM",
+          "source": "病例分类",
+          "values": [
+            "疑似病例",
+            "临床诊断病例",
+            "确诊病例"
+          ]
+        },
+        {
+          "id": "case_class2",
+          "displayName": "病例分类2",
+          "type": "ENUM",
+          "source": "病例分类2"
+        },
+        {
+          "id": "disease_name",
+          "displayName": "疾病名称",
+          "type": "REF:Disease",
+          "source": "疾病名称"
+        },
+        {
+          "id": "report_org",
+          "displayName": "报告单位",
+          "type": "REF:Organization",
+          "source": "报告单位"
+        },
+        {
+          "id": "fill_doctor",
+          "displayName": "填卡医生",
+          "type": "REF:User",
+          "source": "填卡医生"
+        },
+        {
+          "id": "fill_date",
+          "displayName": "医生填卡日期",
+          "type": "DATE",
+          "source": "医生填卡日期"
+        },
+        {
+          "id": "record_time",
+          "displayName": "报告卡录入时间",
+          "type": "DATETIME",
+          "source": "报告卡录入时间"
+        },
+        {
+          "id": "district_audit_time",
+          "displayName": "县区审核时间",
+          "type": "DATETIME",
+          "source": "县区审核时间"
+        },
+        {
+          "id": "city_audit_time",
+          "displayName": "地市审核时间",
+          "type": "DATETIME",
+          "source": "地市审核时间"
+        },
+        {
+          "id": "province_audit_time",
+          "displayName": "省市审核时间",
+          "type": "DATETIME",
+          "source": "省市审核时间"
+        },
+        {
+          "id": "audit_status",
+          "displayName": "审核状态",
+          "type": "ENUM",
+          "source": "审核状态"
+        },
+        {
+          "id": "correct_report_time",
+          "displayName": "订正报告时间",
+          "type": "DATETIME",
+          "source": "订正报告时间"
+        },
+        {
+          "id": "correct_final_time",
+          "displayName": "订正终审时间",
+          "type": "DATETIME",
+          "source": "订正终审时间"
+        },
+        {
+          "id": "remark",
+          "displayName": "备注",
+          "type": "STRING",
+          "source": "备注"
+        }
+      ]
+    },
+    {
+      "id": "Person",
+      "displayName": "患者",
+      "primaryKey": "person_key",
+      "properties": [
+        {
+          "id": "name",
+          "displayName": "姓名",
+          "type": "STRING",
+          "source": "患者姓名",
+          "pii": true
+        },
+        {
+          "id": "guardian",
+          "displayName": "患儿家长姓名",
+          "type": "STRING",
+          "source": "患儿家长姓名",
+          "pii": true
+        },
+        {
+          "id": "sex",
+          "displayName": "性别",
+          "type": "ENUM",
+          "source": "性别",
+          "values": [
+            "男",
+            "女",
+            "不详"
+          ]
+        },
+        {
+          "id": "birth_date",
+          "displayName": "出生日期",
+          "type": "DATE",
+          "source": "出生日期"
+        },
+        {
+          "id": "age",
+          "displayName": "年龄",
+          "type": "STRING",
+          "source": "年龄"
+        },
+        {
+          "id": "phone",
+          "displayName": "联系电话",
+          "type": "STRING",
+          "source": "联系电话",
+          "pii": true
+        },
+        {
+          "id": "work_unit",
+          "displayName": "工作单位/班级",
+          "type": "STRING",
+          "source": "患者工作单位"
+        },
+        {
+          "id": "crowd",
+          "displayName": "人群分类",
+          "type": "ENUM",
+          "source": "人群分类"
+        }
+      ]
+    },
+    {
+      "id": "Disease",
+      "displayName": "疾病",
+      "primaryKey": "disease_id",
+      "properties": [
+        {
+          "id": "name",
+          "displayName": "疾病名称",
+          "type": "STRING",
+          "source": "疾病名称"
+        },
+        {
+          "id": "icd10",
+          "displayName": "ICD-10 编码",
+          "type": "STRING",
+          "source": "ICD-10 编码（映射）"
+        },
+        {
+          "id": "doid",
+          "displayName": "DOID",
+          "type": "STRING",
+          "source": "DOID（映射）"
+        }
+      ]
+    },
+    {
+      "id": "Organization",
+      "displayName": "报告机构",
+      "primaryKey": "org_id",
+      "properties": [
+        {
+          "id": "name",
+          "displayName": "报告单位",
+          "type": "STRING",
+          "source": "报告单位"
+        },
+        {
+          "id": "org_type",
+          "displayName": "单位类型",
+          "type": "STRING",
+          "source": "单位类型"
+        },
+        {
+          "id": "region_code",
+          "displayName": "报告单位地区编码",
+          "type": "STRING",
+          "source": "报告单位地区编码"
+        }
+      ]
+    },
+    {
+      "id": "Address",
+      "displayName": "现住地址",
+      "primaryKey": "address_id",
+      "properties": [
+        {
+          "id": "national_code",
+          "displayName": "现住地址国标",
+          "type": "STRING",
+          "source": "现住地址国标"
+        },
+        {
+          "id": "detail",
+          "displayName": "现住详细地址",
+          "type": "STRING",
+          "source": "现住详细地址",
+          "pii": true
+        },
+        {
+          "id": "patient_belongs",
+          "displayName": "病人属于",
+          "type": "ENUM",
+          "source": "病人属于"
+        }
+      ]
+    },
+    {
+      "id": "User",
+      "displayName": "填报/审核用户",
+      "primaryKey": "user_id",
+      "properties": [
+        {
+          "id": "fill_doctor",
+          "displayName": "填卡医生",
+          "type": "STRING",
+          "source": "填卡医生"
+        },
+        {
+          "id": "record_user",
+          "displayName": "录卡用户",
+          "type": "STRING",
+          "source": "录卡用户"
+        },
+        {
+          "id": "record_user_org",
+          "displayName": "录卡用户所属单位",
+          "type": "STRING",
+          "source": "录卡用户所属单位"
+        },
+        {
+          "id": "correct_user",
+          "displayName": "订正用户",
+          "type": "STRING",
+          "source": "订正用户"
+        },
+        {
+          "id": "correct_user_org",
+          "displayName": "订正用户所属单位",
+          "type": "STRING",
+          "source": "订正用户所属单位"
+        }
+      ]
+    }
+  ],
+  "linkTypes": [
+    {
+      "id": "diagnoses",
+      "displayName": "确诊",
+      "from": "Case",
+      "to": "Disease",
+      "cardinality": "MANY_TO_ONE"
+    },
+    {
+      "id": "reported_by",
+      "displayName": "报告",
+      "from": "Case",
+      "to": "Organization",
+      "cardinality": "MANY_TO_ONE"
+    },
+    {
+      "id": "involves",
+      "displayName": "涉及患者",
+      "from": "Case",
+      "to": "Person",
+      "cardinality": "MANY_TO_ONE"
+    },
+    {
+      "id": "resides_at",
+      "displayName": "常住",
+      "from": "Person",
+      "to": "Address",
+      "cardinality": "MANY_TO_ONE"
+    },
+    {
+      "id": "created_by",
+      "displayName": "填报/审核",
+      "from": "Case",
+      "to": "User",
+      "cardinality": "MANY_TO_ONE"
+    },
+    {
+      "id": "corrects",
+      "displayName": "订正",
+      "from": "Case",
+      "to": "Case",
+      "cardinality": "ONE_TO_ONE"
+    }
+  ],
+  "actionTypes": [
+    {
+      "id": "correct",
+      "displayName": "订正",
+      "description": "修改病例关键字段并产生订正卡",
+      "parameters": [
+        "case_id",
+        "disease_name",
+        "case_class",
+        "remark"
+      ]
+    },
+    {
+      "id": "final_review",
+      "displayName": "终审",
+      "description": "县/市/省三级审核通过",
+      "parameters": [
+        "case_id",
+        "audit_status"
+      ]
+    },
+    {
+      "id": "mark_delete",
+      "displayName": "删除/标注",
+      "description": "删除或标注不纳入统计",
+      "parameters": [
+        "case_id",
+        "reason"
+      ]
+    }
+  ],
+  "vocabularies": {
+    "icd10": {
+      "流行性感冒": "J11 / J10",
+      "甲型H1N1流感": "J10.1",
+      "乙型流感": "J10.1",
+      "新型冠状病毒感染": "U07.1",
+      "肺结核": "A15",
+      "病毒性肝炎": "B15-B19"
+    },
+    "doid": {
+      "流行性感冒": "DOID:8469",
+      "病毒性肝炎": "DOID:1884"
+    },
+    "crowd": [
+      "幼托儿童",
+      "散居儿童",
+      "学生",
+      "教师",
+      "保育员及保姆",
+      "餐饮食品业",
+      "公共场所服务员",
+      "商业服务",
+      "医务人员",
+      "工人",
+      "民工",
+      "农民",
+      "牧民",
+      "渔(船)民",
+      "干部职员",
+      "离退人员",
+      "家务及待业",
+      "不详",
+      "其他"
+    ],
+    "case_class": [
+      "疑似病例",
+      "临床诊断病例",
+      "确诊病例"
+    ],
+    "regions": {
+      "110101": "东城区",
+      "110102": "西城区",
+      "110105": "朝阳区",
+      "110106": "丰台区",
+      "110107": "石景山区",
+      "110108": "海淀区",
+      "110109": "门头沟区",
+      "110111": "房山区",
+      "110112": "通州区",
+      "110113": "顺义区",
+      "110114": "昌平区",
+      "110115": "大兴区",
+      "110116": "怀柔区",
+      "110117": "平谷区",
+      "110118": "密云区",
+      "110119": "延庆区"
+    }
+  },
+  "sourceSchemas": [
+    {
+      "id": "cn_notifiable_disease_card",
+      "displayName": "中国传染病报告卡（网络直报导出）",
+      "columnMapping": {
+        "卡片ID": [
+          "Case",
+          "card_id"
+        ],
+        "卡片编号": [
+          "Case",
+          "card_no"
+        ],
+        "卡片状态": [
+          "Case",
+          "card_status"
+        ],
+        "患者姓名": [
+          "Person",
+          "name"
+        ],
+        "患儿家长姓名": [
+          "Person",
+          "guardian"
+        ],
+        "性别": [
+          "Person",
+          "sex"
+        ],
+        "出生日期": [
+          "Person",
+          "birth_date"
+        ],
+        "年龄": [
+          "Person",
+          "age"
+        ],
+        "患者工作单位": [
+          "Person",
+          "work_unit"
+        ],
+        "联系电话": [
+          "Person",
+          "phone"
+        ],
+        "病人属于": [
+          "Address",
+          "patient_belongs"
+        ],
+        "现住地址国标": [
+          "Address",
+          "national_code"
+        ],
+        "现住详细地址": [
+          "Address",
+          "detail"
+        ],
+        "人群分类": [
+          "Person",
+          "crowd"
+        ],
+        "病例分类": [
+          "Case",
+          "case_class"
+        ],
+        "病例分类2": [
+          "Case",
+          "case_class2"
+        ],
+        "发病日期": [
+          "Case",
+          "onset_date"
+        ],
+        "诊断时间": [
+          "Case",
+          "diag_time"
+        ],
+        "死亡日期": [
+          "Case",
+          "death_date"
+        ],
+        "疾病名称": [
+          "Case",
+          "disease_name"
+        ],
+        "订正前病种": [
+          "Case",
+          "disease_name"
+        ],
+        "订正前诊断时间": [
+          "Case",
+          "diag_time"
+        ],
+        "订正前终审时间": [
+          "Case",
+          "correct_final_time"
+        ],
+        "填卡医生": [
+          "User",
+          "fill_doctor"
+        ],
+        "医生填卡日期": [
+          "Case",
+          "fill_date"
+        ],
+        "报告单位地区编码": [
+          "Organization",
+          "region_code"
+        ],
+        "报告单位": [
+          "Organization",
+          "name"
+        ],
+        "单位类型": [
+          "Organization",
+          "org_type"
+        ],
+        "报告卡录入时间": [
+          "Case",
+          "record_time"
+        ],
+        "录卡用户": [
+          "User",
+          "record_user"
+        ],
+        "录卡用户所属单位": [
+          "User",
+          "record_user_org"
+        ],
+        "县区审核时间": [
+          "Case",
+          "district_audit_time"
+        ],
+        "地市审核时间": [
+          "Case",
+          "city_audit_time"
+        ],
+        "省市审核时间": [
+          "Case",
+          "province_audit_time"
+        ],
+        "审核状态": [
+          "Case",
+          "audit_status"
+        ],
+        "订正报告时间": [
+          "Case",
+          "correct_report_time"
+        ],
+        "订正终审时间": [
+          "Case",
+          "correct_final_time"
+        ],
+        "终审死亡时间": [
+          "Case",
+          "death_date"
+        ],
+        "订正用户": [
+          "User",
+          "correct_user"
+        ],
+        "订正用户所属单位": [
+          "User",
+          "correct_user_org"
+        ],
+        "（删除/标注）时间": [
+          "Case",
+          "correct_final_time"
+        ],
+        "（删除/标注）用户": [
+          "User",
+          "correct_user"
+        ],
+        "（删除/标注）用户所属单位": [
+          "User",
+          "correct_user_org"
+        ],
+        "（删除/未纳入统计）原因": [
+          "Case",
+          "remark"
+        ],
+        "备注": [
+          "Case",
+          "remark"
+        ]
+      }
+    }
+  ]
+}

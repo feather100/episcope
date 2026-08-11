@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EpiScope · 流行病学数据分析平台</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="/static/style.css">
+<script src="/static/vendor/echarts.min.js"></script>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">🔭 EpiScope <span>Ontology-driven Epidemiology Analytics</span></div>
+  <div class="topbar-right">
+    <span id="fileInfo" class="muted">未加载数据</span>
+    <button id="btnReload" class="btn ghost" disabled>重新分析</button>
+  </div>
+</header>
+
+<div class="layout">
+  <!-- 左侧：数据导入 + 筛选 -->
+  <aside class="sidebar">
+    <section class="panel">
+      <h3>📥 数据导入</h3>
+      <div id="dropzone" class="dropzone">
+        <div>拖拽 CSV 到这里，或</div>
+        <input type="file" id="fileInput" accept=".csv" multiple hidden>
+        <button class="btn primary" id="btnPick">选择文件</button>
+        <div class="hint">支持 UTF-8 / GBK 编码，可多选（多个文件将合并分析）</div>
+      </div>
+      <div class="pathrow">
+        <input id="pathInput" placeholder="或输入本机 CSV 绝对路径（本地模式）">
+        <button class="btn" id="btnLoadPath">加载</button>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h3>🔎 全局筛选</h3>
+      <label>疾病名称</label>
+      <div id="fDisease" class="chips"></div>
+      <label>区县（现住地）</label>
+      <div id="fDistrict" class="chips"></div>
+      <label>人群分类</label>
+      <div id="fCrowd" class="chips"></div>
+      <label>日期范围</label>
+      <div class="daterange">
+        <input type="date" id="dateFrom">
+        <span>—</span>
+        <input type="date" id="dateTo">
+      </div>
+      <label>聚集判定阈值（同单位 ≥ N 例）</label>
+      <input type="range" id="clusterMin" min="2" max="20" value="3">
+      <span id="clusterMinVal" class="muted">3 例</span>
+    </section>
+  </aside>
+
+  <!-- 右侧：标签页 -->
+  <main class="content">
+    <nav class="tabs" id="tabs">
+      <button data-tab="overview" class="active">概览</button>
+      <button data-tab="curve">流行曲线</button>
+      <button data-tab="geo">时空分布</button>
+      <button data-tab="demo">人群画像</button>
+      <button data-tab="hospital">医院负担</button>
+      <button data-tab="cluster">聚集检测</button>
+      <button data-tab="quality">报告质量</button>
+      <button data-tab="ontology">本体视图</button>
+    </nav>
+
+    <!-- 概览 -->
+    <section id="tab-overview" class="tab active">
+      <div class="cards" id="kpiCards"></div>
+      <div class="grid2">
+        <div class="panel"><h3>疾病构成</h3><div id="chartDisease" class="chart"></div></div>
+        <div class="panel"><h3>病例分类</h3><div id="chartCaseClass" class="chart"></div></div>
+      </div>
+      <div class="panel"><h3>按区县病例数</h3><div id="chartOverviewDist" class="chart tall"></div></div>
+    </section>
+
+    <!-- 流行曲线 -->
+    <section id="tab-curve" class="tab">
+      <div class="panel">
+        <h3>流行曲线 <span class="muted">（按日期）</span></h3>
+        <div class="legend-row">
+          <label><input type="checkbox" id="curveOnset" checked> 发病日期</label>
+          <label><input type="checkbox" id="curveDiag" checked> 诊断日期</label>
+          <label><input type="checkbox" id="curveRecord"> 录入日期</label>
+        </div>
+        <div id="chartCurve" class="chart tall"></div>
+      </div>
+    </section>
+
+    <!-- 时空分布 -->
+    <section id="tab-geo" class="tab">
+      <div class="grid2">
+        <div class="panel"><h3>区县分布（地图）</h3><div id="chartMap" class="chart tall"></div></div>
+        <div class="panel"><h3>街道级 Top20</h3><div id="chartStreet" class="chart tall"></div></div>
+      </div>
+    </section>
+
+    <!-- 人群画像 -->
+    <section id="tab-demo" class="tab">
+      <div class="grid3">
+        <div class="panel"><h3>人群分类</h3><div id="chartCrowd" class="chart"></div></div>
+        <div class="panel"><h3>性别</h3><div id="chartSex" class="chart"></div></div>
+        <div class="panel"><h3>年龄段</h3><div id="chartAge" class="chart"></div></div>
+      </div>
+    </section>
+
+    <!-- 医院负担 -->
+    <section id="tab-hospital" class="tab">
+      <div class="grid2">
+        <div class="panel"><h3>报告单位 Top15</h3><div id="chartOrg" class="chart tall"></div></div>
+        <div class="panel"><h3>单位类型</h3><div id="chartOrgType" class="chart tall"></div></div>
+      </div>
+      <div class="panel"><h3>医院 × 患者现住区 流向 Top15</h3><div id="chartFlow" class="chart tall"></div></div>
+    </section>
+
+    <!-- 聚集检测 -->
+    <section id="tab-cluster" class="tab">
+      <div class="panel">
+        <h3>学校/班级聚集检测 <span class="muted">（按工作单位聚合，学龄人群）</span></h3>
+        <table class="table" id="clusterTable">
+          <thead><tr>
+            <th>单位（学校/班级）</th><th>病例数</th><th>涉及人数</th>
+            <th>起止日期</th><th>涉及区县</th>
+          </tr></thead>
+          <tbody><tr><td colspan="5" class="muted">加载数据后显示</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 报告质量 -->
+    <section id="tab-quality" class="tab">
+      <div class="grid2">
+        <div class="panel"><h3>发病→诊断 时延</h3><div id="chartLatDiag" class="chart"></div></div>
+        <div class="panel"><h3>发病→录入 时延</h3><div id="chartLatRecord" class="chart"></div></div>
+      </div>
+      <div class="grid3">
+        <div class="panel"><h3>卡片状态</h3><div id="chartCardStatus" class="chart"></div></div>
+        <div class="panel"><h3>审核状态</h3><div id="chartAudit" class="chart"></div></div>
+        <div class="panel"><h3>关键字段缺失率</h3><div id="chartMissing" class="chart"></div></div>
+      </div>
+      <div class="panel" id="qualityNotes"></div>
+    </section>
+
+    <!-- 本体视图 -->
+    <section id="tab-ontology" class="tab">
+      <div class="panel">
+        <h3>本体模型 <span class="muted">ids-onto · Palantir 风格</span></h3>
+        <div id="ontologyView"></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div id="toast" class="toast"></div>
+<script src="/static/app.js"></script>
+</body>
+</html>

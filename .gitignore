@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Runtime / logs
+server.log
+*.log
+
+# Local data (never commit real case data)
+data/raw/
+*.csv.bak
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Tests
+.pytest_cache/
