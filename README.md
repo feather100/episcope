@@ -133,7 +133,7 @@ episcope/
 
 ## ⚖️ License
 
-[MIT](LICENSE) © 2026 feather100-cmyk
+[MIT](LICENSE) © 2026 feather100
 
 ## 🙏 Disclaimer
 
